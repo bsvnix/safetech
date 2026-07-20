@@ -1,0 +1,32 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -e ".[dev]"
+      - run: pytest -q
+
+  leak-gate:
+    # Belt-and-suspenders: nothing from the private product may ever land here.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: no private-product references
+        run: |
+          if grep -rniE 'import (database|provenance|hosting_intel|compute_grade)|__target__|friendly_neighbor' src/ ; then
+            echo "::error::private-product reference detected in src/"; exit 1
+          fi
+          echo "leak gate clean"
