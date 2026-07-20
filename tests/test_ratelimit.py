@@ -1,7 +1,7 @@
-"""Tests for reconkit.net.ratelimit — in-memory fallback behaviour (no Redis)."""
+"""Tests for safefetch.ratelimit — in-memory fallback behaviour (no Redis)."""
 import time
 
-from reconkit.net.ratelimit import RateLimiter
+from safefetch.ratelimit import RateLimiter
 
 
 def test_same_key_serializes():

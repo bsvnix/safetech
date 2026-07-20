@@ -3,19 +3,24 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "reconkit"
-version = "0.1.0"
-description = "Network-hygiene primitives for outbound-fetching services: SSRF guard, cross-process rate limiter, fail-open HTTP cache."
+name = "safefetch"
+version = "0.2.0"
+description = "Safe outbound HTTP for Python: SSRF-proof through redirects, allowlist mode, cross-process rate limiter, fail-open cache."
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 license = "Apache-2.0"
-keywords = ["ssrf", "security", "rate-limit", "http-cache", "requests", "webhooks"]
+keywords = ["ssrf", "security", "http", "requests", "webhooks", "rate-limit", "http-cache", "allowlist"]
 authors = [{ name = "Serhii Budiak" }]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Security",
     "Topic :: Internet :: WWW/HTTP",
 ]
@@ -27,8 +32,9 @@ redis = ["redis>=4.0"]
 dev = ["pytest>=7", "requests>=2.20", "redis>=4.0"]
 
 [project.urls]
-Homepage = "https://github.com/OWNER/reconkit"
-Issues = "https://github.com/OWNER/reconkit/issues"
+Homepage = "https://github.com/bsvnix/safefetch"
+Issues = "https://github.com/bsvnix/safefetch/issues"
+Changelog = "https://github.com/bsvnix/safefetch/blob/main/CHANGELOG.md"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/reconkit"]
+packages = ["src/safefetch"]
