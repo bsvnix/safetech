@@ -11,7 +11,7 @@ share a key serialize; independent keys never wait on each other.
   in-memory floor; if you disable it entirely it is a no-op.
 - Zero opinion about *what* you rate-limit — you pass the key and the interval.
 
-    from reconkit.net.ratelimit import RateLimiter
+    from safefetch import RateLimiter
 
     rl = RateLimiter(redis_url="redis://localhost:6379/0", intervals={
         "api.example.com": 1.0,   # >= 1s between calls to this host, globally

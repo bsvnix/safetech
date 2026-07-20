@@ -1,33 +1,36 @@
-"""Minimal example: SSRF-safe fetch with a shared rate limiter and a cache.
+"""Minimal example: SSRF-safe fetch with a block hook, a rate limiter, a cache.
 
-    pip install "reconkit[http,redis]"
-    python examples/scan.py https://example.com
+    pip install "safefetch[http]"
+    python examples/fetch.py https://example.com
 """
 import sys
 from urllib.parse import urlparse
 
-from reconkit.net import validate_url, safe_get, RateLimiter, HttpCache
+from safefetch import Guard, RateLimiter, HttpCache
 
 
 def main(url: str) -> int:
-    ok, why = validate_url(url)
-    print(f"validate_url -> ok={ok} reason={why!r}")
+    # A guard that logs every block (wire this to your metrics in real code).
+    guard = Guard(on_block=lambda u, why: print(f"  blocked {u!r}: {why}"))
+
+    ok, why = guard.check(url)
+    print(f"check -> ok={ok} reason={why!r}")
     if not ok:
         return 1
 
     host = urlparse(url).hostname or ""
-    # A polite floor of 1 req/s per host (in-memory here; pass redis_url to share
-    # it across processes).
+    # A polite floor of 1 req/s per host (in-memory here; pass redis_url to
+    # share it across processes).
     rl = RateLimiter(intervals={host: 1.0})
     rl.acquire(host)
 
-    resp = safe_get(url, timeout=10)
+    resp = guard.get(url, timeout=10)
     if resp is None:
         print("fetch blocked or failed (fail-closed)")
         return 1
     print(f"GET {url} -> {resp.status_code}, {len(resp.content)} bytes")
 
-    # Optional: cache an idempotent GET (no-op without Redis).
+    # Optional: cache an idempotent GET (disabled here, no-op without Redis).
     cache = HttpCache(redis_url="redis://localhost:6379/0", enabled=False)
     body = cache.get(url, namespace="example", ttl=3600)
     print(f"cache.get -> {'hit/miss body' if body else 'disabled/none'}")

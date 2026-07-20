@@ -7,7 +7,7 @@ Design contract: **any** Redis error is a cache MISS, never an exception — wit
 Redis down the wrapped call simply executes live, so enabling the cache can
 never change behaviour, only latency.
 
-    from reconkit.net.cache import HttpCache
+    from safefetch import HttpCache
 
     cache = HttpCache(redis_url="redis://localhost:6379/1")
     body = cache.get("https://crt.sh/?q=%.example.com&output=json",
@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 class HttpCache:
     def __init__(self, redis_url: str = "redis://localhost:6379/0",
-                 enabled: bool = True, key_prefix: str = "reconkit:cache:",
+                 enabled: bool = True, key_prefix: str = "safefetch:cache:",
                  default_ttl: int = 7200, max_body_bytes: int = 1_000_000):
         self.redis_url = redis_url
         self.enabled = enabled

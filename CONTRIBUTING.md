@@ -1,4 +1,4 @@
-# Contributing to reconkit
+# Contributing to safefetch
 
 Thanks for helping! PRs that add resolvers, tighten the SSRF checks, or add
 rate-limit/cache backends are very welcome.
